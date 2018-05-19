@@ -62,6 +62,13 @@ export default class App extends Component {
 						<LazyRoute {...props} component={import("./Login")} />
 					)}
 				/>
+        <Route
+          exact
+          path="/send"
+          render={props => (
+            <LazyRoute {...props} component={import("./send/Send")} />
+          )}
+        />
 				<footer>
 					{testval}
 					<a href="https://twitter.com/mhaagens" target="_blank">

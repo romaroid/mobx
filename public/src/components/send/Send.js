@@ -1,30 +1,40 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
 
-@inject("store")
+@inject('store')
 @observer
 export default class Send extends Component {
 	constructor(props) {
 		super(props);
 		this.store = this.props.store;
+
+		// bind event callback
+    this.handleAmountChange = this.handleAmountChange.bind(this);
+    this.handleCurrencyChange = this.handleCurrencyChange.bind(this);
 	}
 
-  handleAmountChange(event) {
-    console.log("handleAmountChange", event.target.value);
+	componentDidMount() {
+    this.store.currency.fetchCurrencies();
   }
 
-  handleCurrencyChange(event) {
-    console.log("handleCurrencyChange", event.target.value);
+  handleAmountChange({ target: { value: amount }}) {
+	  amount && this.store.fee.fetchFee({
+      currency: this.store.currency.activeCurrency,
+      amount: +amount,
+    });
+  }
+
+  handleCurrencyChange({ target: { value: currency }}) {
+    this.store.fee.value && this.store.fee.fetchFee({
+      currency,
+      amount: this.store.fee.value,
+    });
   }
 
   handleSubmit(event) {
   }
 
 	render() {
-		const store = this.store;
-
-		debugger
-
 		return (
 			<div className="page home">
 				<main>
@@ -43,16 +53,18 @@ export default class Send extends Component {
                 <label>
                   Currency:
                   <select onChange={this.handleCurrencyChange}>
-                    <option value="EUR">EUR</option>
-                    <option value="USD">USD</option>
-                    <option value="CAD">CAD</option>
+                    {
+                      this.store.currency.currencies.map(
+                        (curr, i) => (<option value={curr.type} key={i}>{curr.label}</option>)
+                      )
+                    }
                   </select>
                 </label>
 							</div>
 
 							<div style={{marginBottom: 10}}>
                 <label>
-                  Fee:
+                  Fee: <span>{this.store.fee.value }</span>
                 </label>
 							</div>
 

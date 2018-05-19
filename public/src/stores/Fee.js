@@ -1,34 +1,24 @@
 import { observable, action } from "mobx";
-import axios from "axios";
+import { request } from '../utils/http';
 
 export default class Fee {
-  @observable fee;
+  @observable value;
 
-  constructor() {
-    this.currencies = 0;
+  async fetchFee(data = {}) {
+    let { data: { fee: { value } } } = await request({
+      query: `
+        query rootQuery($currency: String, $amount: Float) {
+          fee(currency: $currency, amount: $amount) {
+            value
+          }
+        }
+      `,
+      variables: data,
+    });
+    this.setFee(value);
   }
 
-  async fetchFeeData() {
-    // Currencies
-    // TODO
-    let { data } = await axios.get(
-      `https://jsonplaceholder.typicode.com${pathname}`
-    );
-    console.log(data);
-    data.length && this.setData(data);
-  }
-
-  async fetchCurrencyRate(list) {
-    // TODO list of currency types
-    // TODO
-    let { data } = await axios.get(
-      `https://jsonplaceholder.typicode.com${pathname}`
-    );
-    console.log(data);
-    data.length && this.setData(data);
-  }
-
-  @action setFeeData(data) {
-    this.items = data;
+  @action setFee(value) {
+    this.value = value;
   }
 }

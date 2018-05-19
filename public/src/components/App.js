@@ -31,7 +31,7 @@ export default class App extends Component {
 		} = this.store.appState;
 		return (
 			<div className="wrapper">
-				{/*<DevTools />*/}
+				<DevTools />
 				<TopBar />
 
 				<Route

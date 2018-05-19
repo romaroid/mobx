@@ -5,7 +5,7 @@ const {
   GraphQLFloat,
 } = require('graphql');
 
-const getCurrencyValue = (min = 100, max = 200, precision = 4) =>
+const getCurrencyRate = (min = 100, max = 200, precision = 4) =>
   +(Math.random() * (max - min) + min).toPrecision(precision);
 
 const CurrencyType = new GraphQLObjectType({
@@ -15,13 +15,16 @@ const CurrencyType = new GraphQLObjectType({
     id: {
       type: GraphQLID, // required
     },
-    name: {
+    type: {
       type: GraphQLString,
     },
-    value: {
+    label: {
+      type: GraphQLString,
+    },
+    rate: {
       type: GraphQLFloat,
-      description: 'Value of currency', // optional
-      resolve: () => getCurrencyValue(), // optional
+      description: 'Rate of currency', // optional
+      resolve: () => getCurrencyRate(), // optional
     },
   }),
 });

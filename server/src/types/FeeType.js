@@ -12,7 +12,7 @@ const FeeType = new GraphQLObjectType({
   fields: () => ({
     value: {
       type: GraphQLFloat,
-      resolve: () => getRandomFloat(),
+      resolve: () => getRandomFloat(), // resolve entity's field only
     },
   }),
 });

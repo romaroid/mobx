@@ -10,7 +10,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const express = require('express');
 const { graphqlExpress } = require('apollo-server-express');
-const helmet = require('helmet');
 const http = require('http');
 const expressPlayground = require('graphql-playground-middleware-express').default;
 
@@ -33,21 +32,11 @@ const server = http.Server(api);
 // configure to allow only requests from certain origins
 api.use(cors());
 
-// secure express app
-api.use(helmet({
-  dnsPrefetchControl: false,
-  frameguard: false,
-  ieNoOpen: false,
-}));
-
 // parsing the request bodys
 api.use(bodyParser.urlencoded({ extended: false }));
 api.use(bodyParser.json());
 
-// private GraphQL API
-// api.all('/graphql', (req, res, next) => auth(req, res, next));
 api.use('/graphql', bodyParser.json(), graphqlExpress({ schema, cacheControl: true }));
-
 api.get('/explore', expressPlayground({ endpoint: '/graphql' }));
 
 server.listen(config.port, () => {

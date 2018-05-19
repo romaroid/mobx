@@ -14,7 +14,11 @@ export default class Send extends Component {
 	}
 
 	componentDidMount() {
-    this.store.currency.fetchCurrencies();
+	  !this.store.currency.currencies.length && this.store.currency.fetch();
+  }
+
+  componentWillUnmount() {
+	  this.store.currency.clearItems();
   }
 
   handleAmountChange({ target: { value: amount }}) {
@@ -52,10 +56,24 @@ export default class Send extends Component {
 							<div style={{marginBottom: 10}}>
                 <label>
                   Currency:
-                  <select onChange={this.handleCurrencyChange}>
+                  <select
+                    onChange={this.handleCurrencyChange}
+                    value={
+                      this.store.currency.activeCurrency
+                        ? this.store.currency.activeCurrency.type
+                        : ''
+                    }
+                  >
                     {
                       this.store.currency.currencies.map(
-                        (curr, i) => (<option value={curr.type} key={i}>{curr.label}</option>)
+                        (curr, i) => (
+                          <option
+                            value={curr.type}
+                            key={i}
+                          >
+                            {curr.label}
+                          </option>
+                        )
                       )
                     }
                   </select>

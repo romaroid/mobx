@@ -1,15 +1,31 @@
-import { observable, action } from "mobx";
+import { observable, action, reaction } from "mobx";
 import axios from "axios";
 
 import { request } from '../utils/http';
 
 export default class Currency {
+  @observable loading;
   @observable currencies;
   @observable activeCurrency;
 
   constructor() {
+    this.loading = false;
     this.currencies = [];
-    this.activeCurrency = null;
+    this.activeCurrency = JSON.parse(window.localStorage.getItem('activeCurrency')) || null;
+
+    // reactions
+    reaction(
+      () => this.loading,
+      loading => loading ? this.fetchCurrencies() : null,
+    );
+    // reaction(
+    //   () => this.currencies.length,
+    //   length => length ? this.setActiveCurrency(this.currencies[1]) : null,
+    // );
+    reaction(
+      () => this.activeCurrency,
+      activeCurr => window.localStorage.setItem('activeCurrency', JSON.stringify(activeCurr)),
+    )
   }
 
   async fetchCurrencies() {
@@ -37,9 +53,12 @@ export default class Currency {
     data.length && this.setData(data);
   }
 
+  @action fetch() {
+    this.loading = true;
+  }
+
   @action setData(data) {
     this.currencies = data;
-    this.activeCurrency = data[0].type;
   }
 
   @action setActiveCurrency(currency) {
@@ -47,7 +66,6 @@ export default class Currency {
   }
 
   @action clearItems() {
-    this.currencies = [];
     this.activeCurrency = null;
   }
 }

@@ -17,8 +17,8 @@ const expressPlayground = require('graphql-playground-middleware-express').defau
 /**
  * server configuration
  */
-const config = require('./config/');
-const schema = require('./schema');
+const config = require('./src/config/');
+const schema = require('./src/schema');
 
 // environment: development, testing, production
 const environment = process.env.NODE_ENV;
